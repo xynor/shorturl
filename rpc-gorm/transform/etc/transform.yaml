@@ -1,0 +1,17 @@
+Name: transform.rpc
+ListenOn: 0.0.0.0:8080
+Log:
+  Encoding: plain
+# DevServer:
+#     Enabled: true
+#     MetricsPath: /metrics
+#     EnableMetrics: true
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: transform.rpc
+
+DataSource: root:123456@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=True&loc=Local
+Table: shorturl
+Cache:
+  - Host: localhost:6379

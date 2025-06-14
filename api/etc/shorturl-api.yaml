@@ -1,0 +1,14 @@
+Name: shorturl-api
+Host: 0.0.0.0
+Port: 8888
+Log:
+  Encoding: plain
+# DevServer:
+#     Enabled: true
+#     MetricsPath: /metrics
+#     EnableMetrics: true
+Transformer:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: transform.rpc

@@ -1,0 +1,35 @@
+syntax = "v1"
+
+info (
+	title:  "TEST"
+	desc:   "TEST doc"
+	author: "xynor"
+	email:  "ace.xinxuwang@gmail.com"
+)
+
+type (
+	expandReq {
+		shortUrl string `form:"shorten"`
+	}
+	expandResp {
+		url string `json:"url"`
+	}
+)
+
+type (
+	shortenReq {
+		url string `form:"url"`
+	}
+	shortenResp {
+		shorten string `json:"shorten"`
+	}
+)
+
+service shorturl-api {
+	@handler ShortenHander
+	get /shorten (shortenReq) returns (shortenResp)
+
+	@handler ExpandHander
+	get /expand (expandReq) returns (expandResp)
+}
+
