@@ -1,7 +1,8 @@
 Name: job
 Log:
   Mode: console
-  ServiceName: dddddd
+  Encoding: plain
+  ServiceName: ssssssss
   Level: info
 # Prometheus:
 #   Host: 0.0.0.0

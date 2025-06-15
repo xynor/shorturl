@@ -8,6 +8,7 @@ Log:
 #     MetricsPath: /metrics
 #     EnableMetrics: true
 Transformer:
+  NonBlock: true
   Etcd:
     Hosts:
     - 127.0.0.1:2379

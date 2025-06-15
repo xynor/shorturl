@@ -1,7 +1,7 @@
 package main
 
 import (
-	"shorturl/aserver/logger"
+	"context"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -45,8 +45,8 @@ func main() {
 	conf.MustLoad("config.yaml", &c)
 
 	c.MustSetUp()
-	slackWriter := logger.NewSlackWriter("https://hooks.slack.com/services/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")
-	logx.AddWriter(logx.NewWriter(slackWriter))
+	// slackWriter := logger.NewSlackWriter("https://hooks.slack.com/services/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")
+	// logx.AddWriter(logx.NewWriter(slackWriter))
 	logx.AddGlobalFields(logx.LogField{Key: "server", Value: c.Log.ServiceName})
 	defer logx.Close()
 	// do your job
@@ -59,9 +59,16 @@ func main() {
 type AService struct {
 }
 
+func (a *AService) Name(ctx context.Context) string {
+	logx.WithContext(ctx).Info("Name func")
+	return "A"
+}
+
 func (a *AService) Start() {
+	ctx := logx.WithFields(context.Background(), logx.LogField{Key: "loggggggservice", Value: "A"})
 	for {
-		logx.Info("A Service")
+		logx.WithContext(ctx).Info("A Service")
+		a.Name(ctx)
 		time.Sleep(1 * time.Second)
 	}
 }
