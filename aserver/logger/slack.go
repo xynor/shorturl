@@ -1,17 +1,20 @@
-package logger
+package slack
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 )
 
 type slackWriter struct {
 	client *http.Client
 	url    string
 	queue  chan []byte
+}
+
+type slackMessage struct {
+	Text string `json:"text"`
 }
 
 func NewSlackWriter(url string) *slackWriter {
@@ -38,13 +41,26 @@ func (s *slackWriter) Close() error {
 func (s *slackWriter) send() {
 	for msg := range s.queue {
 		entry := map[string]any{}
-		_ = json.Unmarshal(msg, &entry)
-		if entry["report"] != true {
+		if err := json.Unmarshal(msg, &entry); err != nil {
 			continue
 		}
-		text := fmt.Sprintf("[%s] %s", entry["server"].(string), entry["content"].(string))
-		dataJson := fmt.Sprintf(`{"text": "%s"}`, text)
-		req, _ := http.NewRequest("POST", s.url, strings.NewReader(dataJson))
-		_, _ = s.client.Do(req)
+		if entry["level"] == "error" {
+			text := fmt.Sprintf("[%v] %v", entry["server"], entry["content"])
+			m := slackMessage{
+				Text: text,
+			}
+			dataJson, _ := json.Marshal(&m)
+			req, _ := http.NewRequest("POST", s.url, bytes.NewReader(dataJson))
+			_, _ = s.client.Do(req)
+		}
 	}
+}
+
+func SendTo(url, message string) {
+	m := slackMessage{
+		Text: message,
+	}
+	dataJson, _ := json.Marshal(&m)
+	req, _ := http.NewRequest("POST", url, bytes.NewReader(dataJson))
+	_, _ = http.DefaultClient.Do(req)
 }
